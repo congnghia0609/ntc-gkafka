@@ -11,7 +11,7 @@ import (
 
 func Start() {
 	run := true
-	topics := []string {"email"}
+	topics := []string {"streams-plaintext-input"}
 	MIN_COMMIT_COUNT := 1
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers" : "127.0.0.1:9092",
