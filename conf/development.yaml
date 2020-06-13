@@ -1,0 +1,107 @@
+
+
+worker:
+  kafka:
+    # Config producer Importance.HIGH
+    producer:
+      bootstrap:
+        servers: localhost:9092,localhost:9093
+      key:
+        serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+      value:
+        serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+      buffer:
+        # Default: 32 * 1024 * 1024 = 33554432
+        memory: 33554432
+      # Default: Integer.MAX_VALUE = 2147483647
+      retries: 2147483647
+      # Default: 1 ==> ["all", "-1", "0", "1"] The number of acknowledgments the producer to considering a request complete.
+      acks: 1
+      # Default: "none" ==> [none, gzip, snappy, lz4, zstd]
+      compression:
+        type: none
+
+    # Config consumer Importance.HIGH
+    consumer:
+      bootstrap:
+        servers: localhost:9092,localhost:9093
+      group:
+        id: worker
+
+
+
+
+#worker.kafka.consumer.key.deserializer = org.apache.kafka.common.serialization.ByteArrayDeserializer
+#worker.kafka.consumer.value.deserializer = org.apache.kafka.common.serialization.ByteArrayDeserializer
+#  # This is property additional. Default: 500 ms
+#worker.kafka.consumer.poll.timeout.ms = 1000
+#  # Default: 10000
+#worker.kafka.consumer.session.timeout.ms = 10000
+#  # Default: 3000
+#worker.kafka.consumer.heartbeat.interval.ms = 3000
+#  # Default: 1 * 1024 * 1024 = 1048576
+#worker.kafka.consumer.max.partition.fetch.bytes = 1048576
+#  # Default: 1
+#worker.kafka.consumer.fetch.min.bytes = 1
+#  # Default: org.apache.kafka.clients.consumer.RangeAssignor
+#  #worker.kafka.consumer.partition.assignment.strategy = org.apache.kafka.clients.consumer.RoundRobinAssignor
+#
+#
+#
+#  # Config stream Importance.HIGH
+#  ## An identifier for the stream processing application. Must be unique within the Kafka cluster.
+#wordcount.kafka.stream.application.id = streams-wordcount
+#wordcount.kafka.stream.bootstrap.servers = localhost:9092
+#  # Default: 1
+#wordcount.kafka.stream.replication.factor = 1
+#  # Default: /tmp/kafka-streams ==> Directory location for state store.
+#wordcount.kafka.stream.state.dir = /home/nghiatc/ntc/dev/ntc-jkafka/kafka-streams
+#  # Default: org.apache.kafka.common.serialization.Serdes$ByteArraySerde
+#wordcount.kafka.stream.default.key.serde = org.apache.kafka.common.serialization.Serdes$StringSerde
+#  # Default: org.apache.kafka.common.serialization.Serdes$ByteArraySerde
+#wordcount.kafka.stream.default.value.serde = org.apache.kafka.common.serialization.Serdes$StringSerde
+#
+#
+#  # Config producer Importance.HIGH
+#wordcount.kafka.producer.bootstrap.servers = localhost:9092\,localhost:9093
+#wordcount.kafka.producer.key.serializer = org.apache.kafka.common.serialization.ByteArraySerializer
+#wordcount.kafka.producer.value.serializer = org.apache.kafka.common.serialization.ByteArraySerializer
+#
+#
+#  # Config consumer Importance.HIGH
+#wordcount.kafka.consumer.bootstrap.servers = localhost:9092\,localhost:9093
+#wordcount.kafka.consumer.group.id = wordcount
+#wordcount.kafka.consumer.key.deserializer = org.apache.kafka.common.serialization.StringDeserializer
+#wordcount.kafka.consumer.value.deserializer = org.apache.kafka.common.serialization.LongDeserializer
+#  # This is property additional. Default: 500 ms
+#wordcount.kafka.consumer.poll.timeout.ms = 500
+#
+#
+#
+#  # Config stream Importance.HIGH
+#  ## An identifier for the stream processing application. Must be unique within the Kafka cluster.
+#wordcountprocessor.kafka.stream.application.id = streams-wordcount-processor
+#wordcountprocessor.kafka.stream.bootstrap.servers = localhost:9092
+#  # Default: 1
+#wordcountprocessor.kafka.stream.replication.factor = 1
+#  # Default: /tmp/kafka-streams ==> Directory location for state store.
+#wordcountprocessor.kafka.stream.state.dir = /home/nghiatc/ntc/dev/ntc-jkafka/kafka-streams
+#  # Default: org.apache.kafka.common.serialization.Serdes$ByteArraySerde
+#wordcountprocessor.kafka.stream.default.key.serde = org.apache.kafka.common.serialization.Serdes$StringSerde
+#  # Default: org.apache.kafka.common.serialization.Serdes$ByteArraySerde
+#wordcountprocessor.kafka.stream.default.value.serde = org.apache.kafka.common.serialization.Serdes$StringSerde
+#
+#
+#  # Config producer Importance.HIGH
+#wordcountprocessor.kafka.producer.bootstrap.servers = localhost:9092\,localhost:9093
+#wordcountprocessor.kafka.producer.key.serializer = org.apache.kafka.common.serialization.ByteArraySerializer
+#wordcountprocessor.kafka.producer.value.serializer = org.apache.kafka.common.serialization.ByteArraySerializer
+#
+#
+#  # Config consumer Importance.HIGH
+#wordcountprocessor.kafka.consumer.bootstrap.servers = localhost:9092\,localhost:9093
+#wordcountprocessor.kafka.consumer.group.id = wordcountprocessor
+#wordcountprocessor.kafka.consumer.key.deserializer = org.apache.kafka.common.serialization.ByteArrayDeserializer
+#wordcountprocessor.kafka.consumer.value.deserializer = org.apache.kafka.common.serialization.ByteArrayDeserializer
+#  # This is property additional. Default: 500 ms
+#wordcountprocessor.kafka.consumer.poll.timeout.ms = 500
