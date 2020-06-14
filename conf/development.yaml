@@ -6,27 +6,18 @@ worker:
     producer:
       bootstrap:
         servers: localhost:9092,localhost:9093
-      key:
-        serializer: org.apache.kafka.common.serialization.ByteArraySerializer
-      value:
-        serializer: org.apache.kafka.common.serialization.ByteArraySerializer
-      buffer:
-        # Default: 32 * 1024 * 1024 = 33554432
-        memory: 33554432
-      # Default: Integer.MAX_VALUE = 2147483647
-      retries: 2147483647
+      topic: streams-plaintext-input
       # Default: 1 ==> ["all", "-1", "0", "1"] The number of acknowledgments the producer to considering a request complete.
       acks: 1
-      # Default: "none" ==> [none, gzip, snappy, lz4, zstd]
-      compression:
-        type: none
 
     # Config consumer Importance.HIGH
     consumer:
       bootstrap:
-        servers: localhost:9092,localhost:9093
+        servers: localhost:9092
       group:
         id: worker
+      poll: 500
+      topics: streams-plaintext-input
 
 
 
