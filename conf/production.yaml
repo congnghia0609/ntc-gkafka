@@ -1,0 +1,20 @@
+
+
+worker:
+  kafka:
+    # Config producer Importance.HIGH
+    producer:
+      bootstrap:
+        servers: localhost:9092,localhost:9093
+      # Default: 1 ==> ["all", "-1", "0", "1"] The number of acknowledgments the producer to considering a request complete.
+      acks: 1
+      topic: streams-plaintext-input
+
+    # Config consumer Importance.HIGH
+    consumer:
+      bootstrap:
+        servers: localhost:9092
+      group:
+        id: worker
+      poll: 500
+      topics: streams-plaintext-input
