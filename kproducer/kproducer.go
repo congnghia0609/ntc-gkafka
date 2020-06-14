@@ -55,9 +55,9 @@ func NewKProducer(name string) *KProducer {
 				switch ev := e.(type) {
 				case *kafka.Message:
 					if ev.TopicPartition.Error != nil {
-						fmt.Printf("Failed to deliver message: %v\n", ev.TopicPartition)
+						fmt.Printf("Producer[%s] Failed to deliver message: %v\n", id, ev.TopicPartition)
 					} else {
-						fmt.Printf("Successfully produced recored to topic %s partion [%d] @ offset %v\n", *ev.TopicPartition.Topic, ev.TopicPartition.Partition, ev.TopicPartition.Offset)
+						fmt.Printf("Producer[%s] successfully produced recored to topic %s partion [%d] @ offset %v\n", id, *ev.TopicPartition.Topic, ev.TopicPartition.Partition, ev.TopicPartition.Offset)
 					}
 				}
 			}
