@@ -59,11 +59,11 @@ func StartSimpleConsumer() {
 			select {
 			case e := <-processChan:
 				// Process message in here.
-				fmt.Printf("##### Sub Message on %s:\n%s\n", e.TopicPartition, string(e.Value))
+				fmt.Printf("##### Sub[%s] Message on %s:\n%s\n", kc.GetId(), e.TopicPartition, string(e.Value))
 			}
 		}
 	}()
-	fmt.Printf("SimpleConsumer start...\n")
+	fmt.Printf("SimpleConsumer[%s] start...\n", kc.GetId())
 }
 
 func StartSimpleProducer() {

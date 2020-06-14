@@ -19,6 +19,22 @@ type KProducer struct {
 var mKP sync.Mutex
 var mapInstanceKP = map[string]*KProducer{}
 
+func (kp *KProducer) GetName() string {
+	return kp.name
+}
+
+func (kp *KProducer) GetId() string {
+	return kp.id
+}
+
+func (kp *KProducer) GetProducer() *kafka.Producer {
+	return kp.conn
+}
+
+func (kp *KProducer) GetDeliveryChan() chan kafka.Event {
+	return kp.deliveryChan
+}
+
 func NewKProducer(name string) *KProducer {
 	if len(name) == 0 {
 		return nil
@@ -66,6 +82,82 @@ func GetInstance(name string) *KProducer {
 
 func (kp *KProducer) Close() {
 	kp.Close()
+}
+
+func (kp *KProducer) SendRecord(topic string, msg string) error {
+	return kp.conn.Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+		Key:            nil,
+		Value:          []byte(msg),
+	}, kp.deliveryChan)
+}
+
+func (kp *KProducer) SendRecordKV(topic string, key string, value string) error {
+	return kp.conn.Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+		Key:            []byte(key),
+		Value:          []byte(value),
+	}, kp.deliveryChan)
+}
+
+func (kp *KProducer) SendRecordByte(topic string, msg []byte) error {
+	return kp.conn.Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+		Key:            nil,
+		Value:          msg,
+	}, kp.deliveryChan)
+}
+
+func (kp *KProducer) SendRecordKVByte(topic string, key []byte, value []byte) error {
+	return kp.conn.Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+		Key:            key,
+		Value:          value,
+	}, kp.deliveryChan)
+}
+
+func (kp *KProducer) CreateTopic(topic string, partitions int, replications int) {
+	a, err := kafka.NewAdminClientFromProducer(kp.conn)
+	if err != nil {
+		fmt.Errorf("Failed to create new admin client from producer: %s", err)
+	}
+
+	// Contexts are used to abort or limit the amount of time
+	// the Admin call blocks waiting for a result.
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	// Create topics on cluster.
+	// Set Admin options to wait up to 60s for the operation to finish on the remote cluster
+	maxDur := 60 * time.Second
+	numPart := 1
+	if partitions > numPart {
+		numPart = partitions
+	}
+	repl := 1
+	if replications > repl {
+		repl = replications
+	}
+	results, err := a.CreateTopics(
+		ctx,
+		// Multiple topics can be created simultaneously
+		// by providing more TopicSpecification structs here.
+		[]kafka.TopicSpecification{{
+			Topic:             topic,
+			NumPartitions:     numPart,
+			ReplicationFactor: repl,
+		}},
+		// Admin options
+		kafka.SetAdminOperationTimeout(maxDur))
+	if err != nil {
+		fmt.Errorf("Admin Client request error: %v\n", err)
+	}
+	for _, result := range results {
+		if result.Error.Code() != kafka.ErrNoError && result.Error.Code() != kafka.ErrTopicAlreadyExists {
+			fmt.Errorf("Failed to create topic: %v\n", result.Error)
+		}
+		fmt.Printf("%v\n", result)
+	}
+	a.Close()
 }
 
 func SendRecord(name string, topic string, msg string) error {

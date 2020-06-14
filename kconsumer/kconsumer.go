@@ -2,26 +2,53 @@ package kconsumer
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 	"log"
 	"ntc-gkafka/kconfig"
 	"os"
 )
 
+var MinCommit = 1
+
 type KConsumer struct {
 	name    string
+	id      string
 	groupId string
 	conn    *kafka.Consumer
 	isRun   bool
 	poll    int
 }
 
-var MinCommit = 1
+func (kc *KConsumer) GetName() string {
+	return kc.name
+}
+
+func (kc *KConsumer) GetId() string {
+	return kc.id
+}
+
+func (kc *KConsumer) GetGroupId() string {
+	return kc.groupId
+}
+
+func (kc *KConsumer) GetConsumer() *kafka.Consumer {
+	return kc.conn
+}
+
+func (kc *KConsumer) IsRun() bool {
+	return kc.isRun
+}
+
+func (kc *KConsumer) GetPoll() int {
+	return kc.poll
+}
 
 func NewKConsumer(name string) *KConsumer {
 	if len(name) == 0 {
 		return nil
 	}
+	id := name + "_KConsumer_" + uuid.New().String()
 	topics := kconfig.GetConsumeTopics(name, "")
 	cconf := kconfig.GetConsumeConfig(name)
 	groupId, _ := cconf.Get("group.id", "")
@@ -35,7 +62,7 @@ func NewKConsumer(name string) *KConsumer {
 	if err != nil {
 		log.Fatalf("consumer.SubscribeTopics fail: %v\n", err)
 	}
-	return &KConsumer{name: name, groupId: groupId.(string), conn: consumer, isRun: true, poll: poll}
+	return &KConsumer{name: name, id: id, groupId: groupId.(string), conn: consumer, isRun: true, poll: poll}
 }
 
 func (kc *KConsumer) Start(processChan chan *kafka.Message) error {
