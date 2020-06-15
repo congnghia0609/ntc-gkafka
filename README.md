@@ -8,13 +8,9 @@ go get -u github.com/congnghia0609/ntc-gkafka
 
 ## Usage
 ```go
-func GetWDir() string {
-	_, b, _, _ := runtime.Caller(0)
-	return filepath.Dir(b)
-}
-
 func InitNConf() {
-	wdir := GetWDir()
+	_, b, _, _ := runtime.Caller(0)
+	wdir := filepath.Dir(b)
 	fmt.Println("wdir:", wdir)
 	nconf.Init(wdir)
 }

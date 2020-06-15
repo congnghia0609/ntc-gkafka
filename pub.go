@@ -10,13 +10,9 @@ import (
 	"time"
 )
 
-func GetWDir3() string {
-	_, b, _, _ := runtime.Caller(0)
-	return filepath.Dir(b)
-}
-
 func InitNConf3() {
-	wdir := GetWDir3()
+	_, b, _, _ := runtime.Caller(0)
+	wdir := filepath.Dir(b)
 	fmt.Println("wdir:", wdir)
 	nconf.Init(wdir)
 }

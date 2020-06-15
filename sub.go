@@ -12,13 +12,9 @@ import (
 	"syscall"
 )
 
-func GetWDir2() string {
-	_, b, _, _ := runtime.Caller(0)
-	return filepath.Dir(b)
-}
-
 func InitNConf2() {
-	wdir := GetWDir2()
+	_, b, _, _ := runtime.Caller(0)
+	wdir := filepath.Dir(b)
 	fmt.Println("wdir:", wdir)
 	nconf.Init(wdir)
 }

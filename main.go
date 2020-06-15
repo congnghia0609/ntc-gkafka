@@ -15,13 +15,9 @@ import (
 	"time"
 )
 
-func GetWDir() string {
-	_, b, _, _ := runtime.Caller(0)
-	return filepath.Dir(b)
-}
-
 func InitNConf() {
-	wdir := GetWDir()
+	_, b, _, _ := runtime.Caller(0)
+	wdir := filepath.Dir(b)
 	fmt.Println("wdir:", wdir)
 	nconf.Init(wdir)
 }
@@ -38,7 +34,6 @@ func main() {
 	// Producer
 	//StartSimpleProducer()
 	StartSimpleProducer2()
-
 
 	// Hang thread Main.
 	c := make(chan os.Signal, 1)
