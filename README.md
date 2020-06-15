@@ -3,7 +3,7 @@ ntc-gkafka is a module golang kafka client.
 
 ## Install
 ```bash
-go get -u github.com:congnghia0609/ntc-gkafka
+go get -u github.com/congnghia0609/ntc-gkafka
 ```
 
 ## Usage
