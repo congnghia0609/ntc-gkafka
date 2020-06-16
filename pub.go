@@ -22,11 +22,6 @@ func main() {
 	InitNConf3()
 
 	// Consumer
-	//kconsumer.Start()
-
-	// Producer
-	//kproducer.Start()
-
 	name := "worker"
 	topic := kconfig.GetProduceTopic(name, "streams-plaintext-input") // streams-plaintext-input
 

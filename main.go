@@ -55,11 +55,11 @@ func StartSimpleConsumer() {
 			select {
 			case e := <-processChan:
 				// Process message in here.
-				fmt.Printf("##### Sub[%s] Message on %s:\n%s\n", kc.GetId(), e.TopicPartition, string(e.Value))
+				fmt.Printf("##### Sub[%s] Message on %s:\n%s\n", kc.Id, e.TopicPartition, string(e.Value))
 			}
 		}
 	}()
-	fmt.Printf("SimpleConsumer[%s] start...\n", kc.GetId())
+	fmt.Printf("SimpleConsumer[%s] start...\n", kc.Id)
 }
 
 func StartSimpleProducer() {
@@ -81,8 +81,8 @@ func StartSimpleProducer2() {
 	for i := 0; i < 10; i++ {
 		key := fmt.Sprintf("Key_%d", i)
 		msg := fmt.Sprintf("This is message %d", i)
-		fmt.Printf("Producer[%s] preparing to produce record: %s\n", kp.GetId(), msg)
+		fmt.Printf("Producer[%s] preparing to produce record: %s\n", kp.Id, msg)
 		kp.SendRecordKV(topic, key, msg)
 	}
-	fmt.Printf("SimpleProducer[%s] has completely produced to topic: %s!\n", kp.GetId(), topic)
+	fmt.Printf("SimpleProducer[%s] has completely produced to topic: %s!\n", kp.Id, topic)
 }

@@ -12,36 +12,12 @@ import (
 var MinCommit = 1
 
 type KConsumer struct {
-	name    string
-	id      string
-	groupId string
-	conn    *kafka.Consumer
-	isRun   bool
-	poll    int
-}
-
-func (kc *KConsumer) GetName() string {
-	return kc.name
-}
-
-func (kc *KConsumer) GetId() string {
-	return kc.id
-}
-
-func (kc *KConsumer) GetGroupId() string {
-	return kc.groupId
-}
-
-func (kc *KConsumer) GetConsumer() *kafka.Consumer {
-	return kc.conn
-}
-
-func (kc *KConsumer) IsRun() bool {
-	return kc.isRun
-}
-
-func (kc *KConsumer) GetPoll() int {
-	return kc.poll
+	Name    string
+	Id      string
+	GroupId string
+	Conn    *kafka.Consumer
+	IsRun   bool
+	Poll    int
 }
 
 func NewKConsumer(name string) *KConsumer {
@@ -62,27 +38,27 @@ func NewKConsumer(name string) *KConsumer {
 	if err != nil {
 		log.Fatalf("consumer.SubscribeTopics fail: %v\n", err)
 	}
-	return &KConsumer{name: name, id: id, groupId: groupId.(string), conn: consumer, isRun: true, poll: poll}
+	return &KConsumer{Name: name, Id: id, GroupId: groupId.(string), Conn: consumer, IsRun: true, Poll: poll}
 }
 
 func (kc *KConsumer) Start(processChan chan *kafka.Message) error {
 	msgCount := 0
-	for kc.isRun == true {
+	for kc.IsRun == true {
 		select {
 		default:
-			ev := kc.conn.Poll(kc.poll)
+			ev := kc.Conn.Poll(kc.Poll)
 			switch e := ev.(type) {
 			case kafka.AssignedPartitions:
 				fmt.Fprintf(os.Stderr, "%% %v\n", e)
-				kc.conn.Assign(e.Partitions)
+				kc.Conn.Assign(e.Partitions)
 			case kafka.RevokedPartitions:
 				fmt.Fprintf(os.Stderr, "%% %v\n", e)
-				kc.conn.Unassign()
+				kc.Conn.Unassign()
 			case *kafka.Message:
 				processChan <- e
 				msgCount += 1
 				if msgCount%MinCommit == 0 {
-					kc.conn.Commit()
+					kc.Conn.Commit()
 				}
 				//fmt.Printf("%% Message on %s:\n%s\n", e.TopicPartition, string(e.Value))
 
@@ -90,7 +66,7 @@ func (kc *KConsumer) Start(processChan chan *kafka.Message) error {
 				fmt.Printf("%% Reached %v\n", e)
 			case kafka.Error:
 				fmt.Fprintf(os.Stderr, "%% Error: %v\n", e)
-				kc.isRun = false
+				kc.IsRun = false
 			default:
 				//fmt.Printf("Ignored %v\n", e)
 			}
@@ -102,6 +78,6 @@ func (kc *KConsumer) Start(processChan chan *kafka.Message) error {
 
 func (kc *KConsumer) Stop() {
 	fmt.Printf("Closing consumer\n")
-	kc.isRun = false
-	kc.conn.Close()
+	kc.IsRun = false
+	kc.Conn.Close()
 }

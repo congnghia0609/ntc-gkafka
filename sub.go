@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"github.com/congnghia0609/ntc-gconf/nconf"
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
+	"log"
 	"ntc-gkafka/kconsumer"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"runtime"
-	"syscall"
 )
 
 func InitNConf2() {
@@ -24,33 +24,27 @@ func main() {
 	InitNConf2()
 
 	// Consumer
-	//kconsumer.Start()
-
 	name := "worker"
 	kc := kconsumer.NewKConsumer(name)
 	processChan := make(chan *kafka.Message)
 	go kc.Start(processChan)
-
-	// Set up a channel for handling Ctrl-C, etc
-	sigchan := make(chan os.Signal, 1)
-	signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)
-
-	fmt.Printf("Sub start...\n")
-	run := true
-	for run == true {
-		select {
-		case sig := <-sigchan:
-			fmt.Printf("Caught signal %v: terminating\n", sig)
-			kc.Stop()
-			run = false
-			break
-		case e := <-processChan:
-			// Process message in here.
-			fmt.Printf("##### Sub Message on %s:\n%s\n", e.TopicPartition, string(e.Value))
+	// Go-routine to process message.
+	go func() {
+		for {
+			select {
+			case e := <-processChan:
+				// Process message in here.
+				fmt.Printf("##### KConsumer[%s] Message on %s:\n%s\n", kc.Id, e.TopicPartition, string(e.Value))
+			}
 		}
-	}
-	fmt.Printf("Main Sub end task and stop\n")
+	}()
+	fmt.Printf("KConsumer[%s] start...\n", kc.Id)
 
-	// Producer
-	//kproducer.Start()
+	// Hang thread Main.
+	c := make(chan os.Signal, 1)
+	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C) SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught.
+	signal.Notify(c, os.Interrupt)
+	// Block until we receive our signal.
+	<-c
+	log.Println("################# End Main #################")
 }

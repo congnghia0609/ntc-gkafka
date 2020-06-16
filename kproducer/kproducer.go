@@ -10,30 +10,14 @@ import (
 )
 
 type KProducer struct {
-	name         string
-	id           string
-	conn         *kafka.Producer
-	deliveryChan chan kafka.Event
+	Name         string
+	Id           string
+	Conn         *kafka.Producer
+	DeliveryChan chan kafka.Event
 }
 
 var mKP sync.Mutex
 var mapInstanceKP = map[string]*KProducer{}
-
-func (kp *KProducer) GetName() string {
-	return kp.name
-}
-
-func (kp *KProducer) GetId() string {
-	return kp.id
-}
-
-func (kp *KProducer) GetProducer() *kafka.Producer {
-	return kp.conn
-}
-
-func (kp *KProducer) GetDeliveryChan() chan kafka.Event {
-	return kp.deliveryChan
-}
 
 func NewKProducer(name string) *KProducer {
 	if len(name) == 0 {
@@ -63,7 +47,7 @@ func NewKProducer(name string) *KProducer {
 			}
 		}
 	}()
-	return &KProducer{name: name, id: id.(string), conn: producer, deliveryChan: deliveryChan}
+	return &KProducer{Name: name, Id: id.(string), Conn: producer, DeliveryChan: deliveryChan}
 }
 
 func GetInstance(name string) *KProducer {
@@ -85,39 +69,39 @@ func (kp *KProducer) Close() {
 }
 
 func (kp *KProducer) SendRecord(topic string, msg string) error {
-	return kp.conn.Produce(&kafka.Message{
+	return kp.Conn.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Key:            nil,
 		Value:          []byte(msg),
-	}, kp.deliveryChan)
+	}, kp.DeliveryChan)
 }
 
 func (kp *KProducer) SendRecordKV(topic string, key string, value string) error {
-	return kp.conn.Produce(&kafka.Message{
+	return kp.Conn.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Key:            []byte(key),
 		Value:          []byte(value),
-	}, kp.deliveryChan)
+	}, kp.DeliveryChan)
 }
 
 func (kp *KProducer) SendRecordByte(topic string, msg []byte) error {
-	return kp.conn.Produce(&kafka.Message{
+	return kp.Conn.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Key:            nil,
 		Value:          msg,
-	}, kp.deliveryChan)
+	}, kp.DeliveryChan)
 }
 
 func (kp *KProducer) SendRecordKVByte(topic string, key []byte, value []byte) error {
-	return kp.conn.Produce(&kafka.Message{
+	return kp.Conn.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Key:            key,
 		Value:          value,
-	}, kp.deliveryChan)
+	}, kp.DeliveryChan)
 }
 
 func (kp *KProducer) CreateTopic(topic string, partitions int, replications int) {
-	a, err := kafka.NewAdminClientFromProducer(kp.conn)
+	a, err := kafka.NewAdminClientFromProducer(kp.Conn)
 	if err != nil {
 		fmt.Errorf("Failed to create new admin client from producer: %s", err)
 	}
@@ -162,38 +146,38 @@ func (kp *KProducer) CreateTopic(topic string, partitions int, replications int)
 
 func SendRecord(name string, topic string, msg string) error {
 	kp := GetInstance(name)
-	return kp.conn.Produce(&kafka.Message{
+	return kp.Conn.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Key:            nil,
 		Value:          []byte(msg),
-	}, kp.deliveryChan)
+	}, kp.DeliveryChan)
 }
 
 func SendRecordKV(name string, topic string, key string, value string) error {
 	kp := GetInstance(name)
-	return kp.conn.Produce(&kafka.Message{
+	return kp.Conn.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Key:            []byte(key),
 		Value:          []byte(value),
-	}, kp.deliveryChan)
+	}, kp.DeliveryChan)
 }
 
 func SendRecordByte(name string, topic string, msg []byte) error {
 	kp := GetInstance(name)
-	return kp.conn.Produce(&kafka.Message{
+	return kp.Conn.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Key:            nil,
 		Value:          msg,
-	}, kp.deliveryChan)
+	}, kp.DeliveryChan)
 }
 
 func SendRecordKVByte(name string, topic string, key []byte, value []byte) error {
 	kp := GetInstance(name)
-	return kp.conn.Produce(&kafka.Message{
+	return kp.Conn.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Key:            key,
 		Value:          value,
-	}, kp.deliveryChan)
+	}, kp.DeliveryChan)
 }
 
 func CreateTopic(p *kafka.Producer, topic string, partitions int, replications int) {
