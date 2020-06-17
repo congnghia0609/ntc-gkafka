@@ -65,7 +65,7 @@ func GetInstance(name string) *KProducer {
 }
 
 func (kp *KProducer) Close() {
-	kp.Close()
+	kp.Conn.Close()
 }
 
 func (kp *KProducer) SendRecord(topic string, msg string) error {
