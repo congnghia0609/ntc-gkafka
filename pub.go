@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/congnghia0609/ntc-gconf/nconf"
-	"ntc-gkafka/kconfig"
-	"ntc-gkafka/kproducer"
+	"github.com/congnghia0609/ntc-gkafka/kconfig"
+	"github.com/congnghia0609/ntc-gkafka/kproducer"
 	"path/filepath"
 	"runtime"
 	"time"

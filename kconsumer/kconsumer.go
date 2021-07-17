@@ -2,10 +2,10 @@ package kconsumer
 
 import (
 	"fmt"
+	"github.com/congnghia0609/ntc-gkafka/kconfig"
 	"github.com/google/uuid"
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 	"log"
-	"ntc-gkafka/kconfig"
 	"os"
 )
 

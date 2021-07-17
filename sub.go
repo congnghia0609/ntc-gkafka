@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/congnghia0609/ntc-gconf/nconf"
+	"github.com/congnghia0609/ntc-gkafka/kconsumer"
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 	"log"
-	"ntc-gkafka/kconsumer"
 	"os"
 	"os/signal"
 	"path/filepath"

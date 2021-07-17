@@ -2,9 +2,9 @@ package kproducer
 
 import (
 	"fmt"
+	"github.com/congnghia0609/ntc-gkafka/kconfig"
 	"golang.org/x/net/context"
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
-	"ntc-gkafka/kconfig"
 	"sync"
 	"time"
 )
