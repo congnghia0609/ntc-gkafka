@@ -81,5 +81,22 @@ func StartSimpleProducer2() {
 }
 ```
 
+## Test local
+```bash
+# install dependencies
+go mod download
+
+# update go.mod file 
+go mod tidy
+
+# start
+go run main.go
+
+or
+
+make main
+```
+
+
 ## License
 This code is under the [Apache License v2](https://www.apache.org/licenses/LICENSE-2.0).
